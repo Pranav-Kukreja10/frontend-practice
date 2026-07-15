@@ -35,7 +35,6 @@ async function checkWeather(city) {
         const weatherIcon = document.querySelector(".weather-icon");
         const weatherInfo = document.querySelector(".weather-info");
 
-
         const timeOfDay = isDay === 1 ? "day" : "night";
 
         const amChartsMap = {

@@ -35,27 +35,28 @@ async function checkWeather(city) {
         const weatherIcon = document.querySelector(".weather-icon");
         const weatherInfo = document.querySelector(".weather-info");
 
-        const timeOfDay = isDay === 1 ? "d" : "n";
 
-        //Map Open-Meteo WMO codes to the external CDN icon codes
-        const wmoToIconMap = {
-            0: "01", // Clear sky
-            1: "02", // Mainly clear
-            2: "03", // Partly cloudy
-            3: "04", // Overcast
-            45: "50", 48: "50", // Fog
-            51: "09", 53: "09", 55: "09", 56: "09", 57: "09", // Drizzle / Freezing Drizzle
-            61: "10", 63: "10", 65: "10", // Rain
-            66: "13", 67: "13", // Freezing Rain
-            71: "13", 73: "13", 75: "13", 77: "13", // Snow
-            80: "09", 81: "09", 82: "09", // Rain showers
-            85: "13", 86: "13", // Snow showers
-            95: "11", 96: "11", 99: "11" // Thunderstorms
+        const timeOfDay = isDay === 1 ? "day" : "night";
+
+        const amChartsMap = {
+            0: timeOfDay, // Clear
+            1: `cloudy-${timeOfDay}-1`, // Mainly clear
+            2: `cloudy-${timeOfDay}-2`, // Partly cloudy
+            3: "cloudy", // Overcast
+            45: "cloudy", 48: "cloudy", // Fog
+            51: "rainy-4", 53: "rainy-5", 55: "rainy-6", // Drizzle
+            61: "rainy-4", 63: "rainy-5", 65: "rainy-6", // Rain
+            66: "rainy-7", 67: "rainy-7", // Freezing Rain
+            71: "snowy-4", 73: "snowy-5", 75: "snowy-6", // Snow
+            77: "snowy-6", // Snow Grains
+            80: "rainy-4", 81: "rainy-5", 82: "rainy-6", // Rain showers
+            85: "snowy-4", 86: "snowy-6", // Snow showers
+            95: "thunder", 96: "thunder", 99: "thunder" // Thunderstorms
         };
 
-        const iconCode = wmoToIconMap[weatherCode] || "01";
+        const iconName = amChartsMap[weatherCode] || timeOfDay;
 
-        weatherIcon.src = `https://openweathermap.org/img/wn/${iconCode}${timeOfDay}@4x.png`;
+        weatherIcon.src = `https://www.amcharts.com/lib/images/weather/animated/${iconName}.svg`;
         const weatherCodeMap = {
             0: "Clear Sky",
             1: "Mainly Clear",

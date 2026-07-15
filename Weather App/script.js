@@ -1,5 +1,48 @@
 const searchBox = document.querySelector(".search input");
-const searchBtn = document.querySelector(".search button");
+const searchBtn = document.querySelector(".search-btn");
+const locationBtn = document.querySelector(".location-btn");
+
+document.addEventListener("DOMContentLoaded", () => {
+    const savedCity = localStorage.getItem("defaultCity") || "Ludhiana";  
+    checkWeather(savedCity); 
+});
+locationBtn.addEventListener("click", () => {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(async (position) => {
+            const lat = position.coords.latitude; 
+            const lon = position.coords.longitude; 
+
+            const reverseGeoUrl = `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=en`;
+            
+            try {
+                const response = await fetch(reverseGeoUrl); 
+                const data = await response.json(); 
+
+                const currentCity = data.city || data.locality || "Unknown Location"; 
+
+                checkWeather(currentCity); 
+
+                localStorage.setItem("defaultCity", currentCity); 
+
+                searchBox.value = currentCity; 
+            } catch (error) {
+                console.error("Error finding city name:", error); 
+            }
+        }, (error) => {
+            if (error.code === 1) {
+                alert("Location access denied. Please enable location permissions in your browser.");
+            } else if (error.code === 2) {
+                alert("Location request timed out.");
+            } else if (error.code === 3) {
+                alert("Location request was cancelled by the user.");
+            } else {
+                console.error("Geolocation error:", error.message);
+            }
+        });
+    } else {
+        alert("Geolocation is not supported by your browser.");
+    }
+});
 
 async function checkWeather(city) {
     try {
@@ -98,14 +141,17 @@ searchBtn.addEventListener("click", () => {
     const city = searchBox.value.trim();
     if (city !== "") {
         checkWeather(city);
+        localStorage.setItem("defaultCity", city); 
     }
 });
+
 
 searchBox.addEventListener("keypress", (event) => {
     if (event.key === "Enter") {
         const city = searchBox.value.trim();
         if (city !== "") {
             checkWeather(city);
+            localStorage.setItem("defaultCity", city);
         }
     }
-})
+});
